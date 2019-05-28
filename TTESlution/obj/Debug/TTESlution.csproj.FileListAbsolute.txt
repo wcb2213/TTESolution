@@ -1,0 +1,16 @@
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\obj\Debug\TTESlution.csprojAssemblyReference.cache
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\obj\Debug\TTESlution.Form1.resources
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\obj\Debug\TTESlution.Properties.Resources.resources
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\obj\Debug\TTESlution.csproj.GenerateResource.cache
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\obj\Debug\TTESlution.csproj.CoreCompileInputs.cache
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\bin\Debug\TTESlution.exe.config
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\bin\Debug\TTESlution.exe
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\bin\Debug\TTESlution.pdb
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\bin\Debug\MySql.Data.dll
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\bin\Debug\Google.Protobuf.dll
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\bin\Debug\BouncyCastle.Crypto.dll
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\bin\Debug\MySql.Data.xml
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\obj\Debug\TTESlution.csproj.CopyComplete
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\obj\Debug\TTESlution.exe
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\obj\Debug\TTESlution.pdb
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\obj\Debug\TTESlution.Form2.resources
