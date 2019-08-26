@@ -28,7 +28,7 @@ namespace TTESlution
             using (var cmd = conn.CreateCommand())//撤除表格
             {
                 conn.Open();
-                cmd.CommandText = "truncate table tx1";
+                cmd.CommandText = "truncate table df1";
                 //cmd.CommandText = "delete from tx1";
                 cmd.ExecuteNonQuery();
                 conn.Close();
@@ -44,53 +44,21 @@ namespace TTESlution
             }
             else
             {
-                // 一 生成高度的函数  要求 h >= 2500
-                double b = double.Parse(txtHeight.Text) / 50 + 50; // h = -x**2 + b*x => b = (h+2500)/50
-                //double b = 100;
-                Func<double, double> funcHeight = x => -Math.Pow(x, 2) + b * x;
-
-                //200个点 50个上抛 100个平飞 50个下抛
-                var listHeight = new List<double>();
-                for (double i = 0; i < 50; i++)
-                {
-                    listHeight.Add(funcHeight(i));
-                }
-                for (int i = 0; i < 100; i++)
-                {
-                    listHeight.Add(double.Parse(txtHeight.Text));
-                }
-                for (int i = 0; i < 50; i++)
-                {
-                    listHeight.Add(listHeight[49 - i]);
-                }
-                //foreach (var num in listHeight)
-                //{
-                //    Console.WriteLine(num);
-                //}
+                // 一 生成高度的函数
+                var listHeight1 = new List<double>();
+                listHeight1 = height_compute(double.Parse(txtHeight.Text), 50);
+                var listHeight2 = new List<double>();
+                listHeight2 = height_compute(double.Parse(txtHeight2.Text), 50);
+                var listHeight3 = new List<double>();
+                listHeight3 = height_compute(double.Parse(txtHeight3.Text), 50);
 
                 // 二 生成速度的函数
-                double a = double.Parse(txtSpeed.Text) / 50; // v = a*t => a = v/50
-                //double a = 10;
-                Func<double, double> funcSpeed = x => a * x;
-
-                //200个点 50个从零开始的匀加速 100个匀速直线 50个从V开始的匀加速
-                var listSpeed = new List<double>();
-                for (double i = 0; i < 50; i++)
-                {
-                    listSpeed.Add(funcSpeed(i));
-                }
-                for (int i = 0; i < 100; i++)
-                {
-                    listSpeed.Add(double.Parse(txtSpeed.Text));
-                }
-                for (int i = 0; i < 50; i++)
-                {
-                    listSpeed.Add(double.Parse(txtSpeed.Text)+listSpeed[i]);
-                }
-                //foreach (var num in listSpeed)
-                //{
-                //    Console.WriteLine(num);
-                //}
+                var listSpeed1 = new List<double>();
+                listSpeed1 = speed_compute(double.Parse(txtSpeed.Text), 50);
+                var listSpeed2 = new List<double>();
+                listSpeed2 = speed_compute(double.Parse(txtSpeed2.Text), 50);
+                var listSpeed3 = new List<double>();
+                listSpeed3 = speed_compute(double.Parse(txtSpeed3.Text), 50);
 
                 // 三 生成经纬度
                 double aLongitude = double.Parse(txtSLongitude.Text);
@@ -102,96 +70,141 @@ namespace TTESlution
                 //double desLongitude = 130.0;
                 //double desLatitude = 20.0;
 
-                //200个点 经度均匀变化
-                double d1 = (desLongitude - aLongitude) / 199;
+                double d = (desLongitude - aLongitude) / 199;
                 var listLongitude = new List<double>();
                 for (double i = 0; i < 200; i++)
                 {
-                    listLongitude.Add(aLongitude + d1 * i);
+                    listLongitude.Add(aLongitude + d * i);
                 }
-                //foreach (var num in listLongitude)
-                //{
-                //    Console.WriteLine(num);
-                //}
 
-                //200个点 纬度 直线
-                double d2 = (desLatitude - aLatitude) / 199;
-                var listLatitude = new List<double>();
+                double d1 = (desLatitude - aLatitude) / 199;
+                var listLatitude1 = new List<double>();
                 for (double i = 0; i < 200; i++)
                 {
-                    listLatitude.Add(aLatitude + d2 * i);
+                    listLatitude1.Add(aLatitude + d1 * i);
                 }
-                //foreach (var num in listLatitude)
-                //{
-                //    Console.WriteLine(num);
-                //}
 
-                // 200个点 纬度 C
-                // 函数 x**3 可改变3这个数字
-                Func<double, double> funcLatitudeC = x => Math.Pow(x / 199, 3);
+                Func<double, double> funcLatitude2 = x => Math.Pow(x / 199, 2);
                 double dC = desLatitude - aLatitude;
-                var listLatitudeC = new List<double>();
+                var listLatitude2 = new List<double>();
                 for (double i = 0; i < 200; i++)
                 {
-                    listLatitudeC.Add(aLatitude + dC * funcLatitudeC(i));
+                    listLatitude2.Add(aLatitude + dC * funcLatitude2(i));
                 }
-                //foreach (var num in listLatitudeC)
-                //{
-                //    Console.WriteLine(num);
-                //}
 
-                // 200个点 纬度 S
-                // 正弦函数 需保证周期为 （2n+1/2) 取n=1即2.5
-                Func<double, double> funcLatitudeS = x => Math.Sin(x / 199 * Math.PI * 2.5);
+                Func<double, double> funcLatitude3 = x => Math.Log(1 + x / 199 * (Math.E - 1));
                 double dS = desLatitude - aLatitude;
-                var listLatitudeS = new List<double>();
+                var listLatitude3 = new List<double>();
                 for (double i = 0; i < 200; i++)
                 {
-                    listLatitudeS.Add(aLatitude + dS * funcLatitudeS(i));
+                    listLatitude3.Add(aLatitude + dS * funcLatitude3(i));
                 }
-                //foreach (var num in listLatitudeS)
-                //{
-                //    Console.WriteLine(num);
-                //}
 
-                // 生成表格
-                for (int i = 0; i < 200; i++)
-                {
-                    conn.Open();
-                    string sql = "insert into tx1(speed, height, longitude, latitude, latitudec, latitudes) values(" + listSpeed[i].ToString() + ", " + listHeight[i].ToString() + ", "
-                                    + listLongitude[i].ToString() + ", " + listLatitude[i].ToString() + ", " + listLatitudeC[i].ToString() + ", " + listLatitudeS[i].ToString() + ")";
-                    MySqlCommand cmd = new MySqlCommand(sql, conn);
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
-                }
-                // 显示表格
-                try
-                {
-                    conn.Open();
-                    string sql = "select * from tx1";
-                    MySqlCommand cmd = new MySqlCommand(sql, conn);
-                    //MySqlDataReader reader = cmd.ExecuteReader();
-                    //while (reader.Read())
-                    //{
-                    //    MessageBox.Show(reader[0].ToString() + reader[1].ToString() + reader[2].ToString() + reader[3].ToString());
-                    //}
-                    //reader.Close();
-                    MySqlDataAdapter dbAdapter = new MySqlDataAdapter(cmd);
-                    DataSet ds = new DataSet();
-                    dbAdapter.Fill(ds);
-                    //Console.WriteLine(ds.Tables.ToString());
-                    dgvDisp.DataSource = ds.Tables[0];
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show(ex.Message);
+                //生成表格
+                form_forms(listHeight1, listHeight2, listHeight3, listSpeed1, listSpeed2, listSpeed3, listLongitude, listLatitude1, listLatitude2, listLatitude3);
 
-                }
-                finally
-                {
-                    conn.Close();
-                }
             }
         }
+
+        // time指达到最高高度所需要的时间
+        private List<double> height_compute(double heightNum, double time)
+        {
+            // 一 生成高度的函数
+            double b = heightNum / time * 2; 
+            Func<double, double> funcHeight = x => -Math.Pow(x, 2) * b / time / 2 + b * x;
+
+            //200个点 50个上抛 100个平飞 50个下抛
+            var listHeight = new List<double>();
+            for (double i = 0; i < time; i++)
+            {
+                listHeight.Add(funcHeight(i));
+            }
+            for (int i = 0; i < time * 2; i++)
+            {
+                listHeight.Add(heightNum);
+            }
+            for (int i = 0; i < time; i++)
+            {
+                listHeight.Add(funcHeight(time+i));
+            }
+            //foreach (var num in listHeight)
+            //{
+            //    Console.WriteLine(num);
+            //}
+            return listHeight;
+        }
+
+        private List<double> speed_compute(double speedNum, double time)
+        {
+            // 二 生成速度的函数
+            double a = speedNum / time;
+            Func<double, double> funcSpeed = x => a * x;
+
+            //200个点 50个从零开始的匀加速 100个匀速直线 50个从V开始的匀加速
+            var listSpeed = new List<double>();
+            for (double i = 0; i < time; i++)
+            {
+                listSpeed.Add(funcSpeed(i));
+            }
+            for (int i = 0; i < time * 2; i++)
+            {
+                listSpeed.Add(speedNum);
+            }
+            for (int i = 0; i < time; i++)
+            {
+                listSpeed.Add(speedNum + funcSpeed(time+i));
+            }
+            //foreach (var num in listSpeed)
+            //{
+            //    Console.WriteLine(num);
+            //}
+            return listSpeed;
+        }
+
+        private void form_forms(List<double> listHeight1, List<double> listHeight2, List<double> listHeight3,
+                                        List<double> listSpeed1, List<double> listSpeed2, List<double> listSpeed3,
+                                        List<double> listLongitude, List<double> listLatitude1, List<double> listLatitude2, List<double> listLatitude3)
+        {
+            // 生成表格
+            for (int i = 0; i < 200; i++)
+            {
+                conn.Open();
+                string sql = "insert into df1(speed1, speed2, speed3, height1, height2, height3, longitude, latitude1, latitude2, latitude3) values("
+                            + listSpeed1[i].ToString() + ", " + listSpeed2[i].ToString() + ", " + listSpeed3[i].ToString() + ", " 
+                            + listHeight1[i].ToString() + ", " + listHeight2[i].ToString() + ", " + listHeight3[i].ToString() + ", "
+                            + listLongitude[i].ToString() + ", " + listLatitude1[i].ToString() + ", " + listLatitude2[i].ToString() + ", " + listLatitude3[i].ToString() + ")";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+            // 显示表格
+            try
+            {
+                conn.Open();
+                string sql = "select * from df1";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                //MySqlDataReader reader = cmd.ExecuteReader();
+                //while (reader.Read())
+                //{
+                //    MessageBox.Show(reader[0].ToString() + reader[1].ToString() + reader[2].ToString() + reader[3].ToString());
+                //}
+                //reader.Close();
+                MySqlDataAdapter dbAdapter = new MySqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                dbAdapter.Fill(ds);
+                //Console.WriteLine(ds.Tables.ToString());
+                dgvDisp.DataSource = ds.Tables[0];
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
     }
 }
