@@ -152,7 +152,7 @@ namespace TTESlution
             }
             for (int i = 0; i < time; i++)
             {
-                listSpeed.Add(speedNum + funcSpeed(time+i));
+                listSpeed.Add(speedNum + funcSpeed(i));
             }
             //foreach (var num in listSpeed)
             //{
