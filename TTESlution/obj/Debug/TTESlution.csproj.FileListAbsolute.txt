@@ -14,3 +14,4 @@ D:\WorkSpace\VisualStudio\TTESlution\TTESlution\obj\Debug\TTESlution.csproj.Copy
 D:\WorkSpace\VisualStudio\TTESlution\TTESlution\obj\Debug\TTESlution.exe
 D:\WorkSpace\VisualStudio\TTESlution\TTESlution\obj\Debug\TTESlution.pdb
 D:\WorkSpace\VisualStudio\TTESlution\TTESlution\obj\Debug\TTESlution.Form2.resources
+D:\WorkSpace\VisualStudio\TTESlution\TTESlution\obj\Debug\TTESlution.Form4.resources
